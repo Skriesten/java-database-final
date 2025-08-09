@@ -9,7 +9,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     public Customer findByEmail(String email);
     public Customer findById(long customerid);
-
 }
 // 1. Add the repository interface:
 //    - Extend JpaRepository<Customer, Long> to inherit basic CRUD functionality.
