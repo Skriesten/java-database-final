@@ -1,14 +1,73 @@
 package com.project.code.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
+@Entity
 public class Inventory {
-   // 1. Add 'id' field:
-//    - Type: private long 
+    @Id
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    private long id;
+
+    @ManyToOne(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonBackReference("inventory-product")
+    @JoinColumn(name  = "product_id")
+    private Product product;
+
+    @ManyToOne(mappedBy = "store", fetch = FetchType.EAGER)
+    @JsonBackReference("inventory-store")
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    private int stockLevel;
+
+    // Contstructor
+public Inventory(Product product, Store store, int stockLevel) {
+    this.product = product;
+    this.store = store;
+    this.stockLevel = stockLevel;
+}
+
+// ======= Getters and Setters
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public int getStockLevel() {
+        return stockLevel;
+    }
+
+    public void setStockLevel(int stockLevel) {
+        this.stockLevel = stockLevel;
+    }
+
+    // 1. Add 'id' field:
+//    - Type: private long
 //    - This field will represent the unique identifier for the inventory entry.
 //    - Use @Id to mark it as the primary key.
 //    - Use @GeneratedValue(strategy = GenerationType.IDENTITY) to auto-increment it.
 
-// 2. Add 'product' field:
+    // 2. Add 'product' field:
 //    - Type: private Product
 //    - This field will represent the product associated with the inventory entry.
 //    - Use @ManyToOne to establish a many-to-one relationship with the Product entity.

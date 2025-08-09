@@ -1,10 +1,59 @@
 package com.project.code.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+@Entity
 public class Store {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OneToMany(mappedBy = "store")
+    @JsonManagedReference("inventory-store")
+    private long id;
 
+    @NotNull(message = "Store Name cannot be left blank")
+    private String name;
+
+    @NotNull
+    @NotBlank(message = "The strore address cannot be left blank")
+    private String address;
+
+    // Constructor
+    public  Store(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    // ======= Getters and Setters ============================
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+// ======  Instructions ==================================
 // 1. Add 'id' field:
-//    - Type: private long 
+//    - Type: private long
 //    - This field will be auto-incremented.
 //    - Use @Id to mark it as the primary key.
 //    - Use @GeneratedValue(strategy = GenerationType.IDENTITY) to auto-increment it.
