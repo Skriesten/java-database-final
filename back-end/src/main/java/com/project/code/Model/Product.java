@@ -35,7 +35,7 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
+    public boolean getName() {
         return name;
     }
 

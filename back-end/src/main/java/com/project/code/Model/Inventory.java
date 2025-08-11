@@ -29,7 +29,7 @@ public Inventory(Product product, Store store, int stockLevel) {
 }
 
 // ======= Getters and Setters
-    public long getId() {
+    public boolean getId() {
         return id;
     }
 
