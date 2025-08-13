@@ -26,6 +26,10 @@ public class Store {
         this.address = address;
     }
 
+    public Store() {
+
+    }
+
     // ======= Getters and Setters ============================
     public long getId() {
         return id;

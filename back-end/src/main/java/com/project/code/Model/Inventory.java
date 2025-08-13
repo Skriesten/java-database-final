@@ -9,12 +9,12 @@ public class Inventory {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(mappedBy = "product", fetch = FetchType.EAGER)
+    @ManyToOne
     @JsonBackReference("inventory-product")
     @JoinColumn(name  = "product_id")
     private Product product;
 
-    @ManyToOne(mappedBy = "store", fetch = FetchType.EAGER)
+    @ManyToOne
     @JsonBackReference("inventory-store")
     @JoinColumn(name = "store_id")
     private Store store;
@@ -28,10 +28,11 @@ public Inventory(Product product, Store store, int stockLevel) {
     this.stockLevel = stockLevel;
 }
 
-// ======= Getters and Setters
-    public boolean getId() {
-        return id;
+    public Inventory() {
     }
+
+    // ======= Getters and Setters
+    public long getId() { return id; }
 
     public void setId(long id) {
         this.id = id;

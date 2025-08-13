@@ -1,6 +1,7 @@
 package com.project.code.Repo;
 // Completed
 import com.project.code.Model.Inventory;
+import com.project.code.Model.Store;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +12,7 @@ import java.util.List;
 @Transactional
 public interface InventoryRepository extends JpaRepository<Inventory,Long> {
    // #2  Find by Product and Store
-    public Inventory findByProductIdandStoreId(long productId, long storeId);
+    public Inventory findByProductIdandStoreId(long productId, Store storeId);
     // #3 Find by Store ID
     public List<Inventory> findByStoreId(long storeId);
 // #4  Delete by Product ID

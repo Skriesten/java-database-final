@@ -3,6 +3,8 @@ package com.project.code.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.Optional;
+
 @Entity
 public class OrderItem {
     @Id
@@ -47,16 +49,13 @@ public class OrderItem {
         return order;
     }
 
-    public void setOrder(OrderDetails order) {
-        this.order = order;
-    }
+    public void setOrder(OrderDetails orderDetails) {this.order = orderDetails; }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct(Optional<OrderItem> Product) {
     }
 
     public int getQuantity() {

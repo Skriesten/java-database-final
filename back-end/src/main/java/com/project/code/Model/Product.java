@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Entity
 @Table(name = "product", uniqueConstraints = @UniqueConstraint(columnNames = "sku"))
 public class Product {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @OneToMany(mappedBy = "product")
-        @JsonManagedReference("inventory-product")
-        private long id;
+        private  Long id;
 
         @NotNull(message = "Name cannot be blank")
         private String name;
@@ -25,17 +27,21 @@ public class Product {
     @NotNull(message = "SKU cannot be blank and must be unique")
     private String sku;
 
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("inventory-product")
+    private List<Inventory> inventoryItems = new ArrayList<>();
+
+
 // ======= Getters and Setters =================================
 
-    public long getId() {
-        return id;
-    }
+    public Long getId() {return id;}
 
-    public void setId(long id) {
+   public void setId(long id) {
         this.id = id;
     }
 
-    public boolean getName() {
+    public String getName() {
         return name;
     }
 

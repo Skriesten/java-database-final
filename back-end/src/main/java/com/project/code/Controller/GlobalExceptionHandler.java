@@ -32,6 +32,11 @@ public class GlobalExceptionHandler extends Exception {
     }
 
 
+    public static class StoreNotFoundException extends RuntimeException {
 
+        public StoreNotFoundException(Long id) {
+            super("Store not found with ID: " + id);
+        }
+    }
 
 }
