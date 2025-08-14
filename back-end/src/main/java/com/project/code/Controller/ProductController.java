@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@RestController("/product")
+@RestController
+@RequestMapping("/product")
 public class ProductController {
 
     // #1 Set up Controller

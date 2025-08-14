@@ -1,6 +1,7 @@
 package com.project.code.Repo;
 // Completed
 
+import com.project.code.Model.Inventory;
 import com.project.code.Model.OrderDetails;
 import com.project.code.Model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,6 +29,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 // #8  This was added to assist with one of the methods in the OrderService class
    public Product getProductById(long id);
+
+    public List<Inventory> findByNameandCategory(String name, String category);
 }
 // 1. Add the repository interface:
 //    - Extend JpaRepository<Product, Long> to inherit basic CRUD functionality.

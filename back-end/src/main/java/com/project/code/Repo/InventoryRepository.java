@@ -12,7 +12,7 @@ import java.util.List;
 @Transactional
 public interface InventoryRepository extends JpaRepository<Inventory,Long> {
    // #2  Find by Product and Store
-    public Inventory findByProductIdandStoreId(long productId, Store storeId);
+   public Inventory findByProductIdandStoreId(long productId, Store storeId);
     // #3 Find by Store ID
     public List<Inventory> findByStoreId(long storeId);
 // #4  Delete by Product ID
