@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "product", uniqueConstraints = @UniqueConstraint(columnNames = "sku"))
@@ -27,7 +26,6 @@ public class Product {
     @NotNull(message = "SKU cannot be blank and must be unique")
     private String sku;
 
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("inventory-product")
     private List<Inventory> inventoryItems = new ArrayList<>();
@@ -35,7 +33,7 @@ public class Product {
 
 // ======= Getters and Setters =================================
 
-    public Long getId() {return id;}
+    public long getId() {return id;}
 
    public void setId(long id) {
         this.id = id;

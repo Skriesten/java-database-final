@@ -2,13 +2,13 @@ package com.project.code.Repo;
 // Completed
 
 import com.project.code.Model.Inventory;
-import com.project.code.Model.OrderDetails;
 import com.project.code.Model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
 // #2
     public List<Product> findAll();
 
@@ -31,6 +31,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
    public Product getProductById(long id);
 
     public List<Inventory> findByNameandCategory(String name, String category);
+
+    public List<Product> findProductBySubName(String name);
 }
 // 1. Add the repository interface:
 //    - Extend JpaRepository<Product, Long> to inherit basic CRUD functionality.

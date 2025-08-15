@@ -2,6 +2,7 @@ package com.project.code.Repo;
 // Completed
 import com.project.code.Model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

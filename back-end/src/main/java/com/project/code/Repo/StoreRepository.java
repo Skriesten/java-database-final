@@ -11,7 +11,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     public Store findById(long id);
  //#3
     @Query
-    public List<Store> findBySubName(String name);
+    public List<Store> findBySubName(String pname);
 }
     // 1. Add the repository interface:
 //    - Extend JpaRepository<Store, Long> to inherit basic CRUD functionality.
