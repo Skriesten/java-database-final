@@ -33,7 +33,7 @@ public class ReviewController {
 
     @GetMapping("/{storeId/{productId}}")
     public ResponseEntity<Map<String, Object>> getReviews(@PathVariable Long storeId, @PathVariable Long productId){
-
+        String customerName = customerRepository.findById(productId).get().getName();
         Map<String, Object> response = new HashMap<>();
 
         try {

@@ -11,10 +11,6 @@ public class ServiceClass {
     private ProductRepository productRepository;
     private StoreRepository storeRepository;
     private InventoryRepository inventoryRepository;
-// 1. **validateInventory Method**:
-//    - Checks if an inventory record exists for a given product and store combination.
-//    - Parameters: `Inventory inventory`
-//    - Return Type: `boolean` (Returns `false` if inventory exists, otherwise `true`)
 
     // It's good practice to ensure the Product and Store within the Inventory object
     // are managed (i.e., retrieved from the database or newly persisted)
@@ -34,11 +30,6 @@ public class ServiceClass {
         }
     }
 
-
-// 2. **validateProduct Method**:
-//    - Checks if a product exists by its name.
-//    - Parameters: `Product product`
-//    - Return Type: `boolean` (Returns `false` if a product with the same name exists, otherwise `true`)
 public  boolean validateProduct(Product product){
             if(Boolean.parseBoolean(product.getName())){
                     return false;
@@ -47,10 +38,7 @@ public  boolean validateProduct(Product product){
                 return true;
             }
   }
-// 3. **ValidateProductId Method**:
-//    - Checks if a product exists by its ID.
-//    - Parameters: `long id`
-//    - Return Type: `boolean` (Returns `false` if the product does not exist with the given ID, otherwise `true`)
+
 public boolean validateProductId(Product product,  long id){
       if(product.getId()==id){
           return true;
@@ -58,11 +46,31 @@ public boolean validateProductId(Product product,  long id){
           return false;
       }
 }
-// 4. **getInventoryId Method**:
+
+ public Inventory getInventoryId(Inventory inventory){
+            return inventory;
+}
+
+} // ******* END OF CLASS  ***************
+
+// =========  INSTRUCTIONS
+
+// 1. **validateInventory Method**:
+//    - Checks if an inventory record exists for a given product and store combination.
+//    - Parameters: `Inventory inventory`
+//    - Return Type: `boolean` (Returns `false` if inventory exists, otherwise `true`)
+
+// 2. **validateProduct Method**:
+//    - Checks if a product exists by its name.
+//    - Parameters: `Product product`
+//    - Return Type: `boolean` (Returns `false` if a product with the same name exists, otherwise `true`)
+
+// 3. **ValidateProductId Method**:
+//    - Checks if a product exists by its ID.
+//    - Parameters: `long id`
+//    - Return Type: `boolean` (Returns `false` if the product does not exist with the given ID, otherwise `true`)
+
+//4. **getInventoryId Method**:
 //    - Fetches the inventory record for a given product and store combination.
 //    - Parameters: `Inventory inventory`
 //    - Return Type: `Inventory` (Returns the inventory record for the product-store combination)
-    public Inventory getInventoryId(Inventory inventory){
-            return inventory;
-}
-}

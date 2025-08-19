@@ -22,7 +22,7 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     @JsonManagedReference
-    //private OrderDetails orderDetails;
+    private OrderDetails orderDetails;
 
     //  ============ Getters and Setters ================================
     public long getId() {

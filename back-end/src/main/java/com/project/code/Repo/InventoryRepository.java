@@ -6,6 +6,7 @@ import com.project.code.Model.Store;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Transactional
 public interface InventoryRepository extends JpaRepository<Inventory,Long> {
     // #2  Find by Product and Store
+    @Query
     public Inventory findByProductIdandStoreId(long productId, Store storeId);
 
     // #3 Find by Store ID
