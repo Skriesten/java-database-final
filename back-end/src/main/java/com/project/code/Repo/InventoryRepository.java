@@ -29,6 +29,8 @@ public interface InventoryRepository extends JpaRepository<Inventory,Long> {
 
     public List<Inventory> findByProductId(Product id);
 
+    int getStockLevel(Product productId);
+
 // ============= INSTRUCTIONS ====================================== //
 
 // 1. Add the repository interface:

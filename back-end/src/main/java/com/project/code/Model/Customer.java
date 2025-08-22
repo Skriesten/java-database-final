@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Customer {
     @Id
@@ -20,9 +23,9 @@ public class Customer {
     @NotNull(message = "Phone number cannot be blank")
     private String phone;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer")
     @JsonManagedReference
-    private OrderDetails orderDetails;
+    private List<OrderDetails> orderDetails;
 
     //  ============ Getters and Setters ================================
     public long getId() {

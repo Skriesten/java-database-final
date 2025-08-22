@@ -10,13 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/store")
+@RestController
+@RequestMapping("/store")
 public class StoreController {
 
 // #2 Auto wire dependencies
 @Autowired
-StoreRepository storeRepository;
-OrderService orderService;
+   public StoreRepository storeRepository;
+   public OrderService orderService;
 
     // 3. The `addStore` Method:
 @PostMapping
@@ -26,7 +27,7 @@ OrderService orderService;
     }
 
     // 4. The `validateStore` Method:
-    @GetMapping("/{storeId}")
+    @GetMapping("/validate/{storeId}")
     public boolean validateStore(@PathVariable Long storeId){
         return storeRepository.existsById(storeId);
     }

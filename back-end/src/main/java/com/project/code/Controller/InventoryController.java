@@ -1,16 +1,19 @@
 package com.project.code.Controller;
 
 import com.project.code.Model.Inventory;
+import com.project.code.Model.OrderItem;
 import com.project.code.Model.Product;
 import com.project.code.Model.Store;
 import com.project.code.Repo.InventoryRepository;
 import com.project.code.Repo.ProductRepository;
+import com.project.code.Repo.StoreRepository;
 import com.project.code.Service.ServiceClass;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.*;
 
@@ -24,6 +27,8 @@ public class InventoryController
   private  ProductRepository productRepository;
    private InventoryRepository inventoryRepository;
    private ServiceClass serviceClass;
+    @Autowired
+    private StoreRepository storeRepository;
 
     // 3.  The `updateInventory` Method: ================
     @PostMapping("update")
@@ -39,32 +44,18 @@ public class InventoryController
 
 // 4. The `saveInventory` Method: ====================
     @PostMapping("/update") // Handles POST requests to /api/inventory
-    public ResponseEntity<Map<String, Object>> saveInventory(@Valid @RequestBody Inventory inventory) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            ServiceClass serviceClass = new ServiceClass();
-            // 1. Validate if the inventory already exists
-            boolean isValidToSave = serviceClass.validateInventory(inventory);
-            if (!isValidToSave) {
-                // If inventory already exists, return a message stating so
-                response.put("message", "Inventory record for this product and store already exists.");
-                return new ResponseEntity<>(response, HttpStatus.CONFLICT); // 409 Conflict
+    public String saveInventory(@Valid @RequestBody Inventory inventory) {
+        Long inventoryId = inventory.getId();
+          // 1. Validate if the inventory already exists
+            if (!(inventoryId == null)) {
+                // If inventory already exists save the inventory and  return a message stating so
+              String message =  "Inventory record for this product and store already exists.";
+                return message;
             } else {
                 // 2. If it doesn't exist, save the inventory
-                ResponseEntity<Map<String, Object>> savedInventory = saveInventory(inventory);
-                response.put("message", "Inventory saved successfully.");
-                response.put("inventory", savedInventory); // Optionally return the saved inventory details
-                return new ResponseEntity<>(response, HttpStatus.CREATED); // 201 Created
+                inventoryRepository.save(inventory);
+               return "Inventory saved successfully.";
             }
-        } catch (IllegalArgumentException e) {
-            // Catch exceptions from the service layer, like if product or store are invalid
-            response.put("message", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400 Bad Request
-        } catch (Exception e) {
-            // Catch any other unexpected exceptions
-            response.put("message", "An unexpected error occurred: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
-        }
     }
 
     // 5.  The `getAllProducts` Method: ===================
@@ -104,56 +95,41 @@ public class InventoryController
     }
 
     // 7. The `searchProduct` Method:  ===========================
-    //  I couldn't figure this oune out.
-//    @GetMapping("/search") // Specific path for this GET request
-//    public ResponseEntity<Map<String, List<Product>>> searchProduct(
-//          @RequestParam("name") String name, // Binds the "name" query parameter to this String variable
-//          @RequestParam("storeId") Long storeId) { // Binds the "storeId" query parameter to this Long variable
-        // Call your service to perform the product search
-        //Store store = new Store();
-        //ProductRepository productRepository = null;
-       // ServiceClass serviceClass = new ServiceClass();
-
-        // Get the Product name based upon the productId in the Inventory class
-//        Inventory inventory = new Inventory();
-//        String productName = inventory.getProduct().getId().;
-//       // InventoryRepository inventoryRepository = null;
-//        List<Inventory> filteredProducts = new ArrayList<>();
-//        //filteredProducts.get(productRepository.getProductById())
-//        Product product = new Product();
-//        Long newProductId = inventoryRepository.findByProduct(product.getId());
-//        inventory.getProduct().setName(productName);
-//        inventoryRepository.findByProductIdandStoreId(productName, storeId );
-//        List<Product> products = Collections.singletonList(productRepository.findByName(name));
-//
-//        Map<String, List<Product>> response = new HashMap<>();
-//        response.put("product", products); // Package the results under the key "product"
-//        return ResponseEntity.ok(response); // Return a 200 OK response with the product list
-//    }
-
-    // 8. The `removeProduct` Method:  ========================
-    @DeleteMapping("/remove/{productId}")
-    public ResponseEntity<String> removeProduct(@PathVariable  Long productId){
-        ProductRepository productRepository = null;
-        InventoryRepository inventoryRepository = null;
-        if( productRepository.findById(productId) == null){
-            return ResponseEntity.notFound().build();
-        } else
-        {
-            productRepository.deleteById(productId);
-            inventoryRepository.deleteByProductId(productId);
-            return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> searchProduct(Product name, Store storeId) throws ProductNotAvailableException {
+          Map<String, Object> response = new HashMap<>();
+          Long productId = name.getId();
+        if(productId==null && storeId==null){
+            response.put("message", "Product not available");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } else {
+            response.put("product", storeRepository.findById(storeId.getId()));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 
-    // 9. The `validateQuantity` Method:  ========================
-    // Couldn't figure this one out.
-    @GetMapping("/totals")
-    public boolean validateQuantity(Product productId, Store storeId) {
-        ServiceClass serviceClass = new ServiceClass();
-//serviceClass.validateInventory();{
-        return false;
+   // #8
+    @DeleteMapping("/remove/{productId}")
+    public void removeProduct(@PathVariable  Long productId){
+                      inventoryRepository.findById(productId).ifPresentOrElse(inventoryRepository::delete,
+                            () -> {new ProductNotAvailableException("Product not in inventory");});
     }
+
+    // 9. The `validateQuantity` Method:  ========================
+    @GetMapping("/totals")
+    public boolean validateInventory(Inventory inventory, OrderItem orderItem) {
+        Long productId = inventory.getProduct().getId();
+        Long storeId = inventory.getStore().getId();
+        int orderQty = orderItem.getQuantity();
+        int inventoryQty = inventory.getStockLevel();
+
+        if (!(productId == null) && !(storeId == null) && (orderQty < inventoryQty)) {
+                    return true;
+                } else {
+                    return false;
+                }
+        }
+
 
 }  // ***********  END OF INVENTORY CONTROLLER CLASS  ***********
 

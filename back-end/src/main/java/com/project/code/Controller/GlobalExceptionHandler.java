@@ -39,4 +39,11 @@ public class GlobalExceptionHandler extends Exception {
         }
     }
 
+    public class ProductNotAvailableException {
+
+        public ProductNotAvailableException( String message) {
+            super(message);
+        }
+    }
+
 }

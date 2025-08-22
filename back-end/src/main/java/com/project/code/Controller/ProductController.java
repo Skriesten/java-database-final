@@ -1,12 +1,14 @@
 package com.project.code.Controller;
 
 import com.project.code.Model.Inventory;
+import com.project.code.Model.OrderItem;
 import com.project.code.Model.Product;
 import com.project.code.Repo.InventoryRepository;
 import com.project.code.Repo.ProductRepository;
 import com.project.code.Service.ServiceClass;
+
 import jakarta.validation.Valid;
-import jdk.jfr.Category;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -14,10 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/product")
@@ -29,28 +28,38 @@ private ProductRepository productRepository;
 private InventoryRepository inventoryRepository;
 private ServiceClass serviceClass;
 
-
     // #3 add Product method
     @PostMapping
     public ResponseEntity<String> addProduct(@Valid @RequestBody Product product) {
+        Product newProduct = productRepository.getOne(product.getId());
+        boolean isValid = serviceClass.validateProduct(newProduct);
         try {
-            serviceClass.validateProduct(product);
-            productRepository.save(product);
-            return new ResponseEntity<>("Product added successfully", HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            if (isValid) {
+                newProduct.setName(product.getName());
+                newProduct.setPrice(product.getPrice());
+                newProduct.setCategory(product.getCategory());
+                newProduct.setSku(product.getSku());
+                productRepository.save(newProduct);
+                return new ResponseEntity<>("Product added successfully", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("Product already exists", HttpStatus.CONFLICT);
+            }
         } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Error adding product: Data integrity violation", HttpStatus.CONFLICT); // Return 409 Conflict for data integrity issues
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error adding product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     // #4 Get Product by ID Method
     @GetMapping("/product/{id}")
-    public  ResponseEntity<Product> getProductbyId(@PathVariable Long id){
-        productRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return  new ResponseEntity<>(productRepository.findById(id).get(), HttpStatus.OK);
+    public  ResponseEntity<Optional<Product>> getProductbyId(@PathVariable Long id){
+        Map<String,Object> response = new HashMap<>();
+        Optional<Product> productId = productRepository.findById(id);
+        if(productId == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Optional<Product> product =  productRepository.findById(id);
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
     }
 
     // #5 Update Product Method
@@ -98,7 +107,7 @@ public Map<String, Object> getProductByCategoryAndStoreId(@PathVariable String c
 @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id){
         Inventory inventory = new Inventory();
-        boolean isValid =  serviceClass.validateInventory(inventory);
+        boolean isValid =  serviceClass.validateProductId(id);
         if(isValid){
             inventoryRepository.deleteByProductId(id);
             productRepository.deleteById(id);
@@ -130,6 +139,7 @@ public Map<String, Object> getProductByCategoryAndStoreId(@PathVariable String c
 //        - `ProductRepository` for CRUD operations on products.
 //        - `ServiceClass` for product validation and business logic.
 //        - `InventoryRepository` for managing the inventory linked to products.
+
 
 // 3. Define the `addProduct` Method:
 //    - Annotate with `@PostMapping` to handle POST requests for adding a new product.

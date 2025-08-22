@@ -1,11 +1,14 @@
 package com.project.code.Service;
 //complete
 import com.project.code.Model.Inventory;
+import com.project.code.Model.OrderItem;
 import com.project.code.Model.Product;
 import com.project.code.Model.Store;
 import com.project.code.Repo.InventoryRepository;
 import com.project.code.Repo.ProductRepository;
 import com.project.code.Repo.StoreRepository;
+
+import java.util.Optional;
 
 public class ServiceClass {
     private ProductRepository productRepository;
@@ -19,7 +22,7 @@ public class ServiceClass {
     // Check if an inventory record already exists for this product and store
     // Using existsByProductAndStore for efficiency if only existence is needed
 
-    public boolean validateInventory(Inventory inventory) {
+    public boolean validateInventory(Inventory inventory, OrderItem orderItem) {
         long product = productRepository.getProductById(inventory.getProduct().getId()).getId(); // Retrieve product
         Store store = storeRepository.findById(inventory.getStore().getId());       // Retrieve store
         Inventory exists =  inventoryRepository.findByProductIdandStoreId(product, store); // verify if the item isin the store.
@@ -39,8 +42,9 @@ public  boolean validateProduct(Product product){
             }
   }
 
-public boolean validateProductId(Product product,  long id){
-      if(product.getId()==id){
+public boolean validateProductId( Long id){
+      Optional<Product> productId = productRepository.findById(id);
+        if(productId.isPresent()){
           return true;
       } else{
           return false;

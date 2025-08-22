@@ -9,36 +9,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@RestController("/reviews")
+@RestController
+@RequestMapping("/reviews")
 public class ReviewController {
-// 1. Set Up the Controller Class:
-//    - Annotate the class with `@RestController` to designate it as a REST controller for handling HTTP requests.
-//    - Map the class to the `/reviews` URL using `@RequestMapping("/reviews")`.
+
 @Autowired
     ReviewRepository reviewRepository;
     CustomerRepository customerRepository;
 
-
- // 2. Autowired Dependencies:
-//    - Inject the following dependencies via `@Autowired`:
-//        - `ReviewRepository` for accessing review data.
-//        - `CustomerRepository` for retrieving customer details associated with reviews.
-
-
-    @GetMapping("/{storeId/{productId}}")
+    @GetMapping("/{storeId}/{productId}}")
     public ResponseEntity<Map<String, Object>> getReviews(@PathVariable Long storeId, @PathVariable Long productId){
-        String customerName = customerRepository.findById(productId).get().getName();
+        String customerName = customerRepository.findById();
         Map<String, Object> response = new HashMap<>();
-
         try {
             List<Review> filteredReviews = reviewRepository.findByStoreIdAndProductId(storeId, productId);
-            response.put("reviews", filteredReviews);
+            String custName = customerRepository.findByName(reviewRepository.findById().get().getCustomerid());
+          //  LinkedList<Review> reviews = reviewRepository.findByStoreIdAndProductId(storeId, productId);
+           // reviewRepository.findByStoreIdAndProductId();
+           // customerRepository.findByName();
+          //  filteredReviews.add();
+
+
+                  response.put("reviews", filteredReviews);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (GlobalExceptionHandler.StoreNotFoundException e) { // Assuming you create ProductNotFoundException
             response.put("message", "Store not found.");
@@ -48,7 +48,18 @@ public class ReviewController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 500 Internal Server Error
         }
     }
-}
+} // ********************END OF CLASS ****************************
+
+// ================== INSTRUCTIONS ==========================
+// 1. Set Up the Controller Class:
+//    - Annotate the class with `@RestController` to designate it as a REST controller for handling HTTP requests.
+//    - Map the class to the `/reviews` URL using `@RequestMapping("/reviews")`.
+
+// 2. Autowired Dependencies:
+//    - Inject the following dependencies via `@Autowired`:
+//        - `ReviewRepository` for accessing review data.
+//        - `CustomerRepository` for retrieving customer details associated with reviews.
+
 // 3. Define the `getReviews` Method:
 //    - Annotate with `@GetMapping("/{storeId}/{productId}")` to fetch reviews for a specific product in a store by `storeId` and `productId`.
 //    - Accept `storeId` and `productId` via `@PathVariable`.
